@@ -30,9 +30,9 @@ void submenu_start()
     {
       if(lastMessage_time < millis() - delayMilliseconds) // otherwise if it is time to send a message (defined by the last time a message was sent and the interval at which we send a message)
       {
+        messagesSent ++; // increment the counter recording how many messages have been sent
         send_message(); // then send the message
         lastMessage_time = millis(); // update the time that a message was last sent
-        messagesSent ++; // increment the counter recording how many messages have been sent
         lcd.setCursor(0,1); // and then in the right place
         lcd.print(messagesSent); // display the number of messages sent on the LCD
         messagesToSend --;
@@ -41,8 +41,6 @@ void submenu_start()
 
     else if(messagesToSend == 0  && quantity != 0)
     {
-      lcd.setCursor(0,1); // and then in the right place
-      lcd.print(messagesSent); // display the number of messages sent on the LCD
       delay(1000);
       submenu_exit = 1; // then exit the menu (stop the attack)
       lcd_update = 1; // and trigger an lcd update
@@ -61,6 +59,7 @@ void submenu_start()
     }
   }
 }
+
 
 
 

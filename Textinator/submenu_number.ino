@@ -49,7 +49,7 @@ void submenu_number()
       {
         new_number_index = str6.indexOf(targetNumber.charAt(number_current_index));
         new_number_index ++;
-        if(new_char_index > str6.length() - 1) new_char_index = 0;       
+        if(new_number_index > str6.length() - 1) new_number_index = 0;       
         targetNumber.setCharAt(number_current_index, str6.charAt(new_number_index));
         submenu_number_update();
         delay(200);

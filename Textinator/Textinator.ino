@@ -1,5 +1,5 @@
-//Sample using LiquidCrystal library
 #include <LiquidCrystal.h>
+#include <SoftwareSerial.h>
 
 /*******************************************************
  * 
@@ -10,6 +10,10 @@
 
 // select the pins used on the LCD panel
 LiquidCrystal lcd(10, 11, 2, 3, 4, 5);
+
+// define some gsm variables
+int gsmpower = 9; // power pin
+SoftwareSerial serial_gsm(7, 8); 
 
 // define the menu options
 char* menu1_options[] = {
@@ -52,15 +56,16 @@ unsigned long scrollLast = 0;
 unsigned long scrollInterval = 500;
 
 // define some quantity variables
-int quantity = 0;
+int quantity = 5;
 
 // define some delay variables
 unsigned long delayMilliseconds = 1000;
 long delaySeconds = 1;
 
 // define some target variables
-String targetMessage = "prepare to meet your doom patrick yes that is h m"; // used to store message to target
-String targetNumber = "021809596     ";
+String targetMessage = "I AM PATRICKS FOLLY THERE IS NO STOPPING ME      "; // used to store message to target
+String targetMessageParsed;
+String targetNumber = "021893347     ";
 String targetNumberParsed = "+64";
 
 // define some values used by the panel and buttons
@@ -88,6 +93,15 @@ int read_LCD_buttons()
 
 void setup()
 {
+  pinMode(gsmpower, OUTPUT);
+  digitalWrite(9,LOW);
+  delay(1000);
+  digitalWrite(9,HIGH);
+  delay(2000);
+  digitalWrite(9,LOW);
+  delay(3000);
+  Serial.begin(57600);
+  serial_gsm.begin(19200);
   lcd.begin(16, 2);              // start the library
   lcd.clear();
   lcd.setCursor(0,0);
@@ -96,9 +110,18 @@ void setup()
   lcd.clear();
   targetMessage_clear();
   targetNumberParse();
+  targetMessageParse();
   lcd.print(menu1_options[menu1_position]);
   lcd.setCursor(0,1);
   lcd.print(targetNumberParsed);
+  lcd.print("*");
+  Serial.println("Up and running");
+  serial_gsm.println("AT+CMGF=1\r");
+  delay(1000);
+  // serial_gsm.print("AT+CNMI=2,2,0,0,0\r");
+  // delay(100);
+  // serial_gsm.print("AT+CLIP=1\r"); // turn on caller ID notification
+  // delay(100); 
 }
 
 void targetMessage_clear()
@@ -112,6 +135,7 @@ void targetMessage_clear()
 
 void loop()
 {
+  if(serial_gsm.available()) Serial.print(serial_gsm.read());
   if(menu1_lastRead < millis() - menu1_updateInterval)
   {
     lcd_key = read_LCD_buttons();  // read the buttons
@@ -160,6 +184,7 @@ void loop()
     {
       lcd.setCursor(0,1);
       lcd.print(targetNumberParsed);
+      lcd.print("*");
     }    
     if(menu1_position == 1) n = 0; // reset the scrolling index for the target message
     if(menu1_position == 2)
@@ -189,10 +214,10 @@ void loop()
    */
   if((menu1_position) == 1 && scrollLast < millis() - scrollInterval)
   {
-    if(n > targetMessage.length()) n=0;
+    if(n > targetMessageParsed.length()) n=0;
     lcd.setCursor(0,1);
     lcd.print("                ");
-    scrollString = targetMessage.substring(n,n+16);
+    scrollString = targetMessageParsed.substring(n,n+16);
     lcd.setCursor(0,1);
     lcd.print(scrollString);
     n++;
@@ -225,6 +250,11 @@ void loop()
  Str1[49] = 0x00;
  
  */
+
+
+
+
+
 
 
 

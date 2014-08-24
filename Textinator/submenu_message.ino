@@ -67,6 +67,7 @@ void submenu_message()
 
     case btnSELECT:
       {
+        targetMessageParse();
         submenu_exit = 1; // trigger a menu exit
         lcd_update = 1;
         lcd.noCursor();
@@ -103,6 +104,12 @@ void submenu_message_update()
   lcd.cursor();
 }
 
+
+void targetMessageParse()
+{
+  targetMessageParsed = targetMessage;
+  targetMessageParsed.trim(); 
+}
 
 
 
